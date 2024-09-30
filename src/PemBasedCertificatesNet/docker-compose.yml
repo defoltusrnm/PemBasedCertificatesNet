@@ -1,0 +1,14 @@
+﻿services:
+  pem.based.certificates.net.api:
+    image: pem-based-certificates-net-api
+    build:
+      context: .
+      dockerfile: PemBasedCertificatesNet.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - PemCertificates__CertPath=cert.pem
+      - PemCertificates__KeyPath=key.pem
+    ports:
+      - "5001:80"
+      - "5002:443"
