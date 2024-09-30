@@ -7,11 +7,14 @@ namespace PemBasedCertificatesNet.Api.Extensions;
 
 public static class KestrelExtensions
 {
+    // переебашиваем хосты кестрела
     public static WebApplicationBuilder ConfigurePemCertificates(this WebApplicationBuilder builder)
     {
         builder.WebHost.UseKestrel(kestrel =>
         {
+            // забираем пути сертов
             var pemCertificates = builder.Configuration.GetPemCertificates();
+            // перепаршиваем ASPNETCORE_URLS для чтобы было пездато
             var aspNetUrls = builder.Configuration.GetAspNetUrls();
 
             foreach (var aspNetUrl in aspNetUrls)
@@ -47,10 +50,14 @@ public static class KestrelExtensions
             port,
             cfg =>
             {
+                // читаем синхронно серты, иначе кал (нет асинк методов)
                 var certPem = File.ReadAllText(pemCertificates.CertPath);
                 var keyPem = File.ReadAllText(pemCertificates.KeyPath);
+                
+                // сдк делает нам сертификат
                 var x509Cert = X509Certificate2.CreateFromPem(certPem, keyPem);
 
+                // говорим кестрелу его узать
                 cfg.UseHttps(x509Cert);
             }
         );

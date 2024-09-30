@@ -12,6 +12,7 @@ public static class ConfigurationExtensions
             .GetSection(PemCertificates.SectionKey)
             .Get<PemCertificates>();
 
+        // sanity check
         return pemCertificates switch
         {
             null => throw new InvalidOperationException($"No Section {PemCertificates.SectionKey} is defined"),
@@ -31,6 +32,7 @@ public static class ConfigurationExtensions
             throw new InvalidOperationException("Urls for app is not defined. Please define ASPNETCORE_URLS somewhere");
         }
 
+        // забираем полезную инфу из енва, НУЖЕН_ЛИ_ССЛ, АЙПИ_ХОСТ, ПОРТ
         var aspNetUrls = urls
             .Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
             .Select(
